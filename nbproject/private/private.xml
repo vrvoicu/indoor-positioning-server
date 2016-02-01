@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+        <file>
+            <url>src/persistance/Reading.java</url>
+            <bookmark id="1">
+                <name/>
+                <line>29</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/home/victor/NetBeansProjects/Cercetare/src/persistance/ReadingEntity.java</file>
+            <file>file:/home/victor/NetBeansProjects/Cercetare/src/persistance/ImageEntity.java</file>
+            <file>file:/home/victor/NetBeansProjects/Cercetare/src/persistance/GSMReadingEntity.java</file>
+            <file>file:/home/victor/NetBeansProjects/Cercetare/src/persistance/OrientationReadingEntity.java</file>
+            <file>file:/home/victor/NetBeansProjects/Cercetare/src/persistance/PhoneDetailsEntity.java</file>
+            <file>file:/home/victor/NetBeansProjects/Cercetare/src/utils/MatrixToStringConverter.java</file>
+            <file>file:/home/victor/NetBeansProjects/Cercetare/src/controllers/EntitiesController.java</file>
+            <file>file:/home/victor/NetBeansProjects/Cercetare/src/persistance/WifiReadingEntity.java</file>
+            <file>file:/home/victor/NetBeansProjects/Cercetare/src/network/ClientThread.java</file>
+            <file>file:/home/victor/NetBeansProjects/Cercetare/src/persistance/ARMarkerReadingEntity.java</file>
+            <file>file:/home/victor/NetBeansProjects/Cercetare/src/cercetare/Cercetare.java</file>
+        </group>
+    </open-files>
+</project-private>
