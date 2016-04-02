@@ -56,7 +56,7 @@ public class ClientThread extends Thread{
                 System.out.println(ipSocketMessage.getSocketMessageRequest());
                 
                 if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_MARKER_WITHOUT_IMAGE){
-                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage);
+                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingEntity.ReadingType.MARKER_WITHOUT_IMAGE);
                 }
                 if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_MARKER_WITH_IMAGE){
                     ARMarkerReadings armr = (ARMarkerReadings)ipSocketMessage.getObjectFromMessage(ARMarkerReadings.class);
@@ -71,6 +71,13 @@ public class ClientThread extends Thread{
                         );
                     }
                     //System.out.println(imageReading.getImage());
+                }
+                if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_ORIENTATION){
+                    //OrientationReading or = (OrientationReading)ipSocketMessage.getObjectFromMessage(OrientationReading.class);
+                    //WifiReadings wrs = (WifiReadings)ipSocketMessage.getObjectFromMessage(WifiReadings.class);
+                    
+                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingEntity.ReadingType.ORIENTATION);
+                    
                 }
             }
         }

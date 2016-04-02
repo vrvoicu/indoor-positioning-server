@@ -15,9 +15,12 @@ import ipsocketmessage.PhoneDetails;
 import ipsocketmessage.WifiReading;
 import ipsocketmessage.WifiReadings;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import persistance.ARMarkerReadingEntity;
 import persistance.GSMReadingEntity;
 import persistance.OrientationReadingEntity;
@@ -39,7 +42,8 @@ public class EntitiesController implements Runnable{
         emf = Persistence.createEntityManagerFactory("CercetarePU");
         em = emf.createEntityManager();
         
-        ipsocketMessages = new ArrayList<>();
+        //ipsocketMessages = new ArrayList<>();
+        ipsocketMessages = new HashMap<>();
         
         new Thread(EntitiesController.this).start();
     }
@@ -51,7 +55,8 @@ public class EntitiesController implements Runnable{
     }
     
     private boolean run = true;
-    private ArrayList<IPSocketMessage> ipsocketMessages;
+    //private ArrayList<IPSocketMessage> ipsocketMessages;
+    private HashMap<IPSocketMessage, ReadingEntity.ReadingType> ipsocketMessages;
     
     private Object lock = new Object();
     
@@ -67,8 +72,10 @@ public class EntitiesController implements Runnable{
                     break;
                 
                 synchronized(ipsocketMessages){
-                    for(IPSocketMessage iPSocketMessage: ipsocketMessages)
-                        persistSocketMessage(iPSocketMessage);
+                    for(IPSocketMessage iPSocketMessage: ipsocketMessages.keySet())
+                        persistSocketMessage(iPSocketMessage, ipsocketMessages.get(iPSocketMessage));
+                    //for(IPSocketMessage iPSocketMessage: ipsocketMessages)
+                    //    persistSocketMessage(iPSocketMessage);
                     ipsocketMessages.clear();
                 }
             }
@@ -76,7 +83,7 @@ public class EntitiesController implements Runnable{
         }
     }
     
-    private void persistSocketMessage(IPSocketMessage iPSocketMessage){
+    private void persistSocketMessage(IPSocketMessage iPSocketMessage, ReadingEntity.ReadingType readingType){
         System.out.println("start");
         WifiReadings wifiReadings = (WifiReadings)iPSocketMessage.getObjectFromMessage(WifiReadings.class);
         OrientationReading orientationReading = (OrientationReading)iPSocketMessage.getObjectFromMessage(OrientationReading.class);
@@ -85,9 +92,14 @@ public class EntitiesController implements Runnable{
         PhoneDetails phoneDetails = (PhoneDetails) iPSocketMessage.getObjectFromMessage(PhoneDetails.class);
 
         ReadingEntity readingEntity = new ReadingEntity();
-        GSMReadingEntity gsmReadingEntity = new GSMReadingEntity(gsmReading);
+        GSMReadingEntity gsmReadingEntity = null;
+        if(gsmReading != null)
+            gsmReadingEntity = new GSMReadingEntity(gsmReading);
         OrientationReadingEntity orientationReadingEntity = new OrientationReadingEntity(orientationReading);
-        PhoneDetailsEntity phoneDetailsEntity = new PhoneDetailsEntity(phoneDetails);
+        PhoneDetailsEntity phoneDetailsEntity = getPhoneDetailsEntity(phoneDetails.getImei());
+        
+        if(phoneDetailsEntity == null)
+            phoneDetailsEntity = new PhoneDetailsEntity(phoneDetails);
 
         ArrayList<WifiReadingEntity> wifiReadingEntities = new ArrayList<>();
         ArrayList<ARMarkerReadingEntity> arMarkerReadingsEntities = new ArrayList<>();
@@ -101,18 +113,21 @@ public class EntitiesController implements Runnable{
             persist(wifiReadingEntity);
         }
 
-        for(ARMarkerReading arMarkerReading : arMarkerReadings.getArMarkerReadings()){
-            arMarkerReadingEntity = new ARMarkerReadingEntity(arMarkerReading);
-            arMarkerReadingsEntities.add(arMarkerReadingEntity);
-            persist(arMarkerReadingEntity);
-        }
+        if(arMarkerReadings != null)
+            for(ARMarkerReading arMarkerReading : arMarkerReadings.getArMarkerReadings()){
+                arMarkerReadingEntity = new ARMarkerReadingEntity(arMarkerReading);
+                arMarkerReadingsEntities.add(arMarkerReadingEntity);
+                persist(arMarkerReadingEntity);
+            }
 
         persist(orientationReadingEntity);
-        persist(gsmReadingEntity);
+        if(gsmReadingEntity != null)
+            persist(gsmReadingEntity);
         persist(phoneDetailsEntity);
 
         readingEntity.setWifiReadings(wifiReadingEntities);
-        readingEntity.setGsmReadingEntity(gsmReadingEntity);
+        if(gsmReadingEntity != null)
+            readingEntity.setGsmReadingEntity(gsmReadingEntity);
         readingEntity.setOrientationReadingEntity(orientationReadingEntity);
         readingEntity.setArMarkerReadingEntitys(arMarkerReadingsEntities);
         readingEntity.setPhoneDetailsEntity(phoneDetailsEntity);
@@ -121,9 +136,18 @@ public class EntitiesController implements Runnable{
         System.out.println("end");
     }
     
-    public void addSocketMessage(IPSocketMessage iPSocketMessage){
+    public PhoneDetailsEntity getPhoneDetailsEntity(String imei){
+        Query query = em.createNamedQuery("PhoneDetailsEntity.findByImei");
+        query.setParameter("imei", imei);
+        List<PhoneDetailsEntity> phoneDetailsEntity = query.getResultList();
+        if(phoneDetailsEntity.isEmpty())
+            return null;
+        return phoneDetailsEntity.get(0);
+    }
+    
+    public void addSocketMessage(IPSocketMessage iPSocketMessage, ReadingEntity.ReadingType readingType){
         synchronized(ipsocketMessages){
-            ipsocketMessages.add(iPSocketMessage);
+            ipsocketMessages.put(iPSocketMessage, readingType);
             ThreadUtils.localNotify(EntitiesController.this);
         }
     }

@@ -30,6 +30,7 @@ public class OrientationReadingEntity implements Serializable {
     private float azimuth;
     private float pitch;
     private float roll;
+    private long session;
     
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "orientationReadingEntity")
     private ReadingEntity readingEntity;
@@ -40,6 +41,7 @@ public class OrientationReadingEntity implements Serializable {
         azimuth = orientationReading.getAzimuth();
         pitch = orientationReading.getPitch();
         roll = orientationReading.getRoll();
+        session = orientationReading.getSession();
     }
 
     public Long getId() {

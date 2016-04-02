@@ -51,7 +51,7 @@ public class ReadingEntity implements Serializable {
     private List<ARMarkerReadingEntity> arMarkerReadingEntitys;
     
     @Enumerated(value = EnumType.STRING)
-    private ReadingType readingType;       
+    private ReadingType readingType;
     
     public enum ReadingType{
         MARKER_WITH_IMAGE, MARKER_WITHOUT_IMAGE, ORIENTATION

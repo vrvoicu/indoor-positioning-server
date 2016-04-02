@@ -7,13 +7,18 @@ package persistance;
 
 import ipsocketmessage.PhoneDetails;
 import java.io.Serializable;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -21,23 +26,36 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "phone_details")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "PhoneDetailsEntity.findAll", query = "SELECT p FROM PhoneDetailsEntity p"),
+    @NamedQuery(name = "PhoneDetailsEntity.findById", query = "SELECT p FROM PhoneDetailsEntity p WHERE p.id = :id"),
+    @NamedQuery(name = "PhoneDetailsEntity.findByImei", query = "SELECT p FROM PhoneDetailsEntity p WHERE p.imei = :imei"),
+    @NamedQuery(name = "PhoneDetailsEntity.findByName", query = "SELECT p FROM PhoneDetailsEntity p WHERE p.name = :name")})
 public class PhoneDetailsEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
     private Long id;
-    
+    @Column(name = "imei")
+    private String imei;
+    @Column(name = "name")
+    private String name;
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "phoneDetailsEntity")
     private ReadingEntity readingEntity;
-    
-    private String imei;
-    private String name;
-    
-    private PhoneDetailsEntity(){}
+
+    public PhoneDetailsEntity() {
+    }
     
     public PhoneDetailsEntity(PhoneDetails phoneDetails){
-        name = phoneDetails.getPhone();
-        imei = phoneDetails.getPhoneId();
+        imei= phoneDetails.getImei();
+        name = phoneDetails.getPhoneName();
+    }
+
+    public PhoneDetailsEntity(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
@@ -46,6 +64,32 @@ public class PhoneDetailsEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getImei() {
+        return imei;
+    }
+
+    public void setImei(String imei) {
+        this.imei = imei;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ReadingEntity getReadingEntity() {
+        return readingEntity;
+    }
+
+    public void setReadingEntity(ReadingEntity readingEntity) {
+        this.readingEntity = readingEntity;
+        if(readingEntity.getPhoneDetailsEntity() != this)
+            readingEntity.setPhoneDetailsEntity(this);
     }
 
     @Override
@@ -71,16 +115,6 @@ public class PhoneDetailsEntity implements Serializable {
     @Override
     public String toString() {
         return "persistance.PhoneDetailsEntity[ id=" + id + " ]";
-    }
-
-    public ReadingEntity getReadingEntity() {
-        return readingEntity;
-    }
-
-    public void setReadingEntity(ReadingEntity readingEntity) {
-        this.readingEntity = readingEntity;
-        if(readingEntity.getPhoneDetailsEntity() != this)
-            readingEntity.setPhoneDetailsEntity(this);
     }
     
 }
