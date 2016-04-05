@@ -6,10 +6,14 @@
 package persistance;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -23,6 +27,25 @@ public class ImageEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @OneToOne(fetch=FetchType.LAZY, mappedBy="image")
+    //@JoinColumn(name = "marker_id")
+    private ARMarkerReadingEntity arMarker;
+    
+    @Column(name = "image")
+    private byte[] image;
+    @Column(name = "width")
+    private int width;
+    @Column(name = "height")
+    private int height;
+    
+    public ImageEntity(){}
+    
+    public ImageEntity(byte[] image, int width, int height){
+        this.image = image;
+        this.width = width;
+        this.height = height;
+    }
 
     public Long getId() {
         return id;
@@ -32,6 +55,38 @@ public class ImageEntity implements Serializable {
         this.id = id;
     }
 
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public ARMarkerReadingEntity getArMarker() {
+        return arMarker;
+    }
+
+    public void setArMarker(ARMarkerReadingEntity arMarker) {
+        this.arMarker = arMarker;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

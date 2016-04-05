@@ -59,18 +59,20 @@ public class ClientThread extends Thread{
                     EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingEntity.ReadingType.MARKER_WITHOUT_IMAGE);
                 }
                 if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_MARKER_WITH_IMAGE){
-                    ARMarkerReadings armr = (ARMarkerReadings)ipSocketMessage.getObjectFromMessage(ARMarkerReadings.class);
-                    ImageReading imageReading = (ImageReading)ipSocketMessage.getObjectFromMessage(ImageReading.class);
-                    for(ARMarkerReading arMarkerReading: armr.getArMarkerReadings()){
-                        System.out.println(arMarkerReading.getMarkerId());
-                        System.out.println(
-                                MatrixToStringConverter.convertToString(arMarkerReading.getVertex(), ",", ",")
-                        );
-                        System.out.println(
-                                MatrixToStringConverter.convertToString(arMarkerReading.getTransMat(), ",", ",")
-                        );
-                    }
+//                    ARMarkerReadings armr = (ARMarkerReadings)ipSocketMessage.getObjectFromMessage(ARMarkerReadings.class);
+//                    ImageReading imageReading = (ImageReading)ipSocketMessage.getObjectFromMessage(ImageReading.class);
+//                    for(ARMarkerReading arMarkerReading: armr.getArMarkerReadings()){
+//                        System.out.println(arMarkerReading.getMarkerId());
+//                        System.out.println(
+//                                MatrixToStringConverter.convertToString(arMarkerReading.getVertex(), ",", ",")
+//                        );
+//                        System.out.println(
+//                                MatrixToStringConverter.convertToString(arMarkerReading.getTransMat(), ",", ",")
+//                        );
+//                    }
                     //System.out.println(imageReading.getImage());
+                    System.out.println("aaaaaaa");
+                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingEntity.ReadingType.MARKER_WITH_IMAGE);
                 }
                 if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_ORIENTATION){
                     //OrientationReading or = (OrientationReading)ipSocketMessage.getObjectFromMessage(OrientationReading.class);

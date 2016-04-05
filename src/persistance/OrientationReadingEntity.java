@@ -38,6 +38,10 @@ public class OrientationReadingEntity implements Serializable {
     public OrientationReadingEntity(){}
     
     public OrientationReadingEntity(OrientationReading orientationReading){
+        
+        if(orientationReading == null)
+            return;
+        
         azimuth = orientationReading.getAzimuth();
         pitch = orientationReading.getPitch();
         roll = orientationReading.getRoll();
