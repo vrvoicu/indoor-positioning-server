@@ -85,6 +85,9 @@ public class ReadingEntity implements Serializable {
     }
 
     public void setGsmReadingEntity(GSMReadingEntity gsmReadingEntity) {
+        if(gsmReadingEntity == null)
+            return;
+        
         this.gsmReadingEntity = gsmReadingEntity;
         if(gsmReadingEntity.getReadingEntity() != this)
             gsmReadingEntity.setReadingEntity(this);
@@ -95,7 +98,14 @@ public class ReadingEntity implements Serializable {
     }
 
     public void setOrientationReadingEntity(OrientationReadingEntity orientationReadingEntity) {
+        if(orientationReadingEntity == null)
+            return;
+        
         this.orientationReadingEntity = orientationReadingEntity;
+        
+        if(orientationReadingEntity.getReadingEntity() == null)
+            orientationReadingEntity.setReadingEntity(this);
+        
         if(orientationReadingEntity.getReadingEntity() != this)
             orientationReadingEntity.setReadingEntity(this);
     }

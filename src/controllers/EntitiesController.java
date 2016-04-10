@@ -88,27 +88,35 @@ public class EntitiesController implements Runnable{
     
     private void persistSocketMessage(IPSocketMessage iPSocketMessage, ReadingEntity.ReadingType readingType){
         System.out.println("start");
+        
         WifiReadings wifiReadings = (WifiReadings)iPSocketMessage.getObjectFromMessage(WifiReadings.class);
         OrientationReading orientationReading = (OrientationReading)iPSocketMessage.getObjectFromMessage(OrientationReading.class);
         ARMarkerReadings arMarkerReadings = (ARMarkerReadings)iPSocketMessage.getObjectFromMessage(ARMarkerReadings.class);
         GSMReading gsmReading = (GSMReading)iPSocketMessage.getObjectFromMessage(GSMReading.class);
         PhoneDetails phoneDetails = (PhoneDetails) iPSocketMessage.getObjectFromMessage(PhoneDetails.class);
-        
         ImageReadings imageReadings = (ImageReadings) iPSocketMessage.getObjectFromMessage(ImageReadings.class);
-
-
-        ReadingEntity readingEntity = new ReadingEntity();
-        GSMReadingEntity gsmReadingEntity = null;
-        OrientationReadingEntity orientationReadingEntity = null;
-        if(gsmReading != null)
-            gsmReadingEntity = new GSMReadingEntity(gsmReading);
-        if(orientationReading == null)
-            orientationReadingEntity = new OrientationReadingEntity(orientationReading);
-        PhoneDetailsEntity phoneDetailsEntity = getPhoneDetailsEntity(phoneDetails.getImei());
         
-        if(phoneDetailsEntity == null)
+        if(phoneDetails == null)
+            return;
+        
+        PhoneDetailsEntity phoneDetailsEntity = getPhoneDetailsEntity(phoneDetails.getImei());
+        if(phoneDetailsEntity == null){
             phoneDetailsEntity = new PhoneDetailsEntity(phoneDetails);
+            persist(phoneDetailsEntity);
+        }
 
+        GSMReadingEntity gsmReadingEntity = null;
+        if(gsmReading != null){
+            gsmReadingEntity = new GSMReadingEntity(gsmReading);
+            persist(gsmReadingEntity);
+        }
+        
+        OrientationReadingEntity orientationReadingEntity = null;
+        if(orientationReading != null){
+            orientationReadingEntity = new OrientationReadingEntity(orientationReading);   
+            persist(orientationReadingEntity);
+        }
+                    
         ArrayList<WifiReadingEntity> wifiReadingEntities = new ArrayList<>();
         ArrayList<ARMarkerReadingEntity> arMarkerReadingsEntities = new ArrayList<>();
 
@@ -124,32 +132,30 @@ public class EntitiesController implements Runnable{
 
         
         if(arMarkerReadings != null){
-            ImageReading imageReading;
-            ImageEntity imageEntity;
+            ImageReading imageReading = null;
+            ImageEntity imageEntity = null;
             for(int i=0; i< arMarkerReadings.getArMarkerReadings().size(); i++){
                  arMarkerReadingEntity = new ARMarkerReadingEntity(arMarkerReadings.getArMarkerReadings().get(i));
-                 imageReading = imageReadings.getImages().get(i);
-                 imageEntity = new ImageEntity(imageReading.getImage(), imageReading.getSize()[0], imageReading.getSize()[1]);
+                 if(imageReading != null){
+                    imageReading = imageReadings.getImages().get(i);
+                    imageEntity = new ImageEntity(imageReading.getImage(), imageReading.getSize()[0], imageReading.getSize()[1]);
+                 }
                  persist(arMarkerReadingEntity);
-                 arMarkerReadingEntity.setImage(imageEntity);
-                 persist(imageEntity);
+                 if(imageEntity != null){
+                    arMarkerReadingEntity.setImage(imageEntity);
+                    persist(imageEntity);
+                 }
                  arMarkerReadingsEntities.add(arMarkerReadingEntity);
             }
         }
 
-        if(orientationReadingEntity != null)
-            persist(orientationReadingEntity);
-        if(gsmReadingEntity != null)
-            persist(gsmReadingEntity);
-        persist(phoneDetailsEntity);
-
+        ReadingEntity readingEntity = new ReadingEntity();
+        readingEntity.setPhoneDetailsEntity(phoneDetailsEntity);
         readingEntity.setWifiReadings(wifiReadingEntities);
-        if(gsmReadingEntity != null)
-            readingEntity.setGsmReadingEntity(gsmReadingEntity);
+        readingEntity.setGsmReadingEntity(gsmReadingEntity);
         readingEntity.setOrientationReadingEntity(orientationReadingEntity);
         readingEntity.setArMarkerReadingEntitys(arMarkerReadingsEntities);
-        readingEntity.setPhoneDetailsEntity(phoneDetailsEntity);
-
+        
         persist(readingEntity);
         System.out.println("end");
     }

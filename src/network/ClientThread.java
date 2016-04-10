@@ -5,9 +5,11 @@
  */
 package network;
 
+import com.sun.imageio.plugins.common.ImageUtil;
 import controllers.EntitiesController;
 import ipsocketmessage.ARMarkerReading;
 import ipsocketmessage.ARMarkerReadings;
+import ipsocketmessage.BitmapImage;
 import ipsocketmessage.GSMReading;
 import ipsocketmessage.IPRequestType;
 import ipsocketmessage.IPSocketMessage;
@@ -16,16 +18,20 @@ import ipsocketmessage.OrientationReading;
 import ipsocketmessage.PhoneDetails;
 import ipsocketmessage.WifiReading;
 import ipsocketmessage.WifiReadings;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
 import persistance.ARMarkerReadingEntity;
 import persistance.GSMReadingEntity;
 import persistance.OrientationReadingEntity;
 import persistance.PhoneDetailsEntity;
 import persistance.ReadingEntity;
 import persistance.WifiReadingEntity;
+import utils.ImageUtils;
 import utils.MatrixToStringConverter;
 
 /**
@@ -47,15 +53,14 @@ public class ClientThread extends Thread{
     
     public void run(){
         IPSocketMessage ipSocketMessage;
+        IPRequestType ipRequestType;
         try{
             while(run){
                 ipSocketMessage = (IPSocketMessage) ois.readObject();
-                
-                System.out.println(ipSocketMessage);
-                
-                System.out.println(ipSocketMessage.getSocketMessageRequest());
+                ipRequestType = (IPRequestType)ipSocketMessage.getSocketMessageRequest();
                 
                 if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_MARKER_WITHOUT_IMAGE){
+                    
                     EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingEntity.ReadingType.MARKER_WITHOUT_IMAGE);
                 }
                 if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_MARKER_WITH_IMAGE){
@@ -71,7 +76,6 @@ public class ClientThread extends Thread{
 //                        );
 //                    }
                     //System.out.println(imageReading.getImage());
-                    System.out.println("aaaaaaa");
                     EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingEntity.ReadingType.MARKER_WITH_IMAGE);
                 }
                 if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_ORIENTATION){
@@ -80,6 +84,28 @@ public class ClientThread extends Thread{
                     
                     EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingEntity.ReadingType.ORIENTATION);
                     
+                }
+                
+                if(ipRequestType == IPRequestType.REQUEST_MAP){
+                    BufferedImage bufferedImage = ImageIO.read(new File("DSC_0926.jpg"));
+                    //bufferedImage.getRGB(MIN_PRIORITY, MIN_PRIORITY, MIN_PRIORITY, MIN_PRIORITY, rgbArray, MIN_PRIORITY, MIN_PRIORITY)
+                    byte[] image = ImageUtils.imageToByteArray(bufferedImage);
+                    int []bitmapImagePixels = ImageUtils.convertToBitmap(image, bufferedImage.getWidth(), bufferedImage.getHeight());
+                    
+                    bufferedImage.getRGB(
+                            0,
+                            0, 
+                            bufferedImage.getWidth(), 
+                            bufferedImage.getHeight(), 
+                            bitmapImagePixels, 
+                            0, bufferedImage.getWidth());
+                    
+                    BitmapImage bitmapImage = new BitmapImage(bitmapImagePixels, new int[]{bufferedImage.getWidth(), bufferedImage.getHeight()});
+                    ipSocketMessage.setSocketMessageObjects(new ArrayList<>());
+                    ipSocketMessage.getSocketMessageObjects().add(bitmapImage);
+                    System.out.println("sent");
+                    oos.writeObject(ipSocketMessage);
+                    oos.flush();
                 }
             }
         }
