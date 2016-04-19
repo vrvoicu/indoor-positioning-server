@@ -86,8 +86,15 @@ public class EntitiesController implements Runnable{
         }
     }
     
+    public ArrayList<WifiReadingEntity> getWifiReadingEntitiesByBSSIDs(ArrayList<String> bssids){
+        Query query = em.createNamedQuery("WifiReadingEntity.findAllWhereIn");
+        query.setParameter("bssids", bssids);
+        List<WifiReadingEntity> wifiReadingEntitys = query.getResultList();
+        return new ArrayList<WifiReadingEntity>(wifiReadingEntitys);
+    }
+    
     private void persistSocketMessage(IPSocketMessage iPSocketMessage, ReadingEntity.ReadingType readingType){
-        System.out.println("start");
+        //System.out.println("start");
         
         WifiReadings wifiReadings = (WifiReadings)iPSocketMessage.getObjectFromMessage(WifiReadings.class);
         OrientationReading orientationReading = (OrientationReading)iPSocketMessage.getObjectFromMessage(OrientationReading.class);
@@ -150,6 +157,7 @@ public class EntitiesController implements Runnable{
         }
 
         ReadingEntity readingEntity = new ReadingEntity();
+        readingEntity.setReadingType(readingType);
         readingEntity.setPhoneDetailsEntity(phoneDetailsEntity);
         readingEntity.setWifiReadings(wifiReadingEntities);
         readingEntity.setGsmReadingEntity(gsmReadingEntity);
@@ -157,7 +165,7 @@ public class EntitiesController implements Runnable{
         readingEntity.setArMarkerReadingEntitys(arMarkerReadingsEntities);
         
         persist(readingEntity);
-        System.out.println("end");
+        //System.out.println("end");
     }
     
     public PhoneDetailsEntity getPhoneDetailsEntity(String imei){

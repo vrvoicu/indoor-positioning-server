@@ -14,6 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -22,6 +24,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "wifi_reading")
+@NamedQueries({
+    @NamedQuery(name = "WifiReadingEntity.findAllWhereIn", query = "SELECT w FROM WifiReadingEntity w WHERE w.bssid IN :bssids ")//AND w.readingEntity.readingType = :readingType
+})
 public class WifiReadingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

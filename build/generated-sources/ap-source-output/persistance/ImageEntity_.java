@@ -5,7 +5,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import persistance.ARMarkerReadingEntity;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2016-04-09T18:16:37")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2016-04-17T17:23:49")
 @StaticMetamodel(ImageEntity.class)
 public class ImageEntity_ { 
 

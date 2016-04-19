@@ -7,6 +7,7 @@ package network;
 
 import com.sun.imageio.plugins.common.ImageUtil;
 import controllers.EntitiesController;
+import handlers.LocationDetectionHandler;
 import ipsocketmessage.ARMarkerReading;
 import ipsocketmessage.ARMarkerReadings;
 import ipsocketmessage.BitmapImage;
@@ -106,6 +107,12 @@ public class ClientThread extends Thread{
                     System.out.println("sent");
                     oos.writeObject(ipSocketMessage);
                     oos.flush();
+                }
+                else if (ipRequestType == IPRequestType.POST_LOCATION_DATA){
+                    LocationDetectionHandler.getInstance().getLocation(ipSocketMessage);
+                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingEntity.ReadingType.LOCATION);
+                    //System.out.println(ipRequestType);
+                    //LocationDetectionHandler
                 }
             }
         }

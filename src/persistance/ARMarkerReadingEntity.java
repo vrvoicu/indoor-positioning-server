@@ -90,6 +90,10 @@ public class ARMarkerReadingEntity implements Serializable {
     public String getTransMat() {
         return transMat;
     }
+    
+    public double[][] getTransMatAsVector(){
+        return MatrixToStringConverter.convertToMatrix(transMat, ";", "|");
+    }
 
     public void setTransMat(String transMat) {
         this.transMat = transMat;

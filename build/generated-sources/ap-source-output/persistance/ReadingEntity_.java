@@ -11,7 +11,7 @@ import persistance.PhoneDetailsEntity;
 import persistance.ReadingEntity.ReadingType;
 import persistance.WifiReadingEntity;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2016-04-09T18:16:37")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2016-04-17T17:23:49")
 @StaticMetamodel(ReadingEntity.class)
 public class ReadingEntity_ { 
 

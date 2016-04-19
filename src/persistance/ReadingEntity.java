@@ -54,7 +54,7 @@ public class ReadingEntity implements Serializable {
     private ReadingType readingType;
     
     public enum ReadingType{
-        MARKER_WITH_IMAGE, MARKER_WITHOUT_IMAGE, ORIENTATION
+        MARKER_WITH_IMAGE, MARKER_WITHOUT_IMAGE, ORIENTATION, LOCATION
     }
 
     public ReadingEntity() {
