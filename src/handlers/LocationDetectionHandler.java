@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import persistance.ARMarkerReadingEntity;
 import persistance.ReadingEntity;
+import persistance.ReadingsEntity;
 import persistance.WifiReadingEntity;
 import utils.RodriguesEulerUtils;
 
@@ -63,7 +64,7 @@ public class LocationDetectionHandler {
                 }
         
         WifiReadingEntity wifiReadingEntity;
-        ReadingEntity.ReadingType readingType;
+        ReadingsEntity.ReadingType readingType;
         ArrayList<ARMarkerReadingEntity> arMarkerReadingEntitys;
         ARMarkerReadingEntity arMarkerReadingEntity;
         double eulerAngles[];

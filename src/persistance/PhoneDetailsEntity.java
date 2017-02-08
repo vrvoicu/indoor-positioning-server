@@ -43,8 +43,11 @@ public class PhoneDetailsEntity implements Serializable {
     private String imei;
     @Column(name = "name")
     private String name;
+//    @OneToOne(fetch = FetchType.LAZY, mappedBy = "phoneDetailsEntity")
+//    private ReadingEntity readingEntity;
+    
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "phoneDetailsEntity")
-    private ReadingEntity readingEntity;
+    private ReadingsEntity readReadingsEntity;
 
     public PhoneDetailsEntity() {
     }
@@ -82,15 +85,27 @@ public class PhoneDetailsEntity implements Serializable {
         this.name = name;
     }
 
-    public ReadingEntity getReadingEntity() {
-        return readingEntity;
+//    public ReadingEntity getReadingEntity() {
+//        return readingEntity;
+//    }
+//
+//    public void setReadingEntity(ReadingEntity readingEntity) {
+//        this.readingEntity = readingEntity;
+//        if(readingEntity.getPhoneDetailsEntity() != this)
+//            readingEntity.setPhoneDetailsEntity(this);
+//    }
+
+    public ReadingsEntity getReadReadingsEntity() {
+        return readReadingsEntity;
     }
 
-    public void setReadingEntity(ReadingEntity readingEntity) {
-        this.readingEntity = readingEntity;
-        if(readingEntity.getPhoneDetailsEntity() != this)
-            readingEntity.setPhoneDetailsEntity(this);
+    public void setReadReadingsEntity(ReadingsEntity readReadingsEntity) {
+        if(readReadingsEntity == null)
+            return;
+        
+        this.readReadingsEntity = readReadingsEntity;
     }
+    
 
     @Override
     public int hashCode() {

@@ -5,20 +5,11 @@
  */
 package network;
 
-import com.sun.imageio.plugins.common.ImageUtil;
 import controllers.EntitiesController;
 import handlers.LocationDetectionHandler;
-import ipsocketmessage.ARMarkerReading;
-import ipsocketmessage.ARMarkerReadings;
 import ipsocketmessage.BitmapImage;
-import ipsocketmessage.GSMReading;
 import ipsocketmessage.IPRequestType;
 import ipsocketmessage.IPSocketMessage;
-import ipsocketmessage.ImageReading;
-import ipsocketmessage.OrientationReading;
-import ipsocketmessage.PhoneDetails;
-import ipsocketmessage.WifiReading;
-import ipsocketmessage.WifiReadings;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.ObjectInputStream;
@@ -26,14 +17,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
-import persistance.ARMarkerReadingEntity;
-import persistance.GSMReadingEntity;
-import persistance.OrientationReadingEntity;
-import persistance.PhoneDetailsEntity;
 import persistance.ReadingEntity;
-import persistance.WifiReadingEntity;
+import persistance.ReadingsEntity;
 import utils.ImageUtils;
-import utils.MatrixToStringConverter;
 
 /**
  *
@@ -60,32 +46,36 @@ public class ClientThread extends Thread{
                 ipSocketMessage = (IPSocketMessage) ois.readObject();
                 ipRequestType = (IPRequestType)ipSocketMessage.getSocketMessageRequest();
                 
-                if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_MARKER_WITHOUT_IMAGE){
-                    
-                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingEntity.ReadingType.MARKER_WITHOUT_IMAGE);
+                if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.SINGLE_WIFI_READINGS){
+                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingsEntity.ReadingType.SINGLE_WIFI_READINGS);
                 }
-                if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_MARKER_WITH_IMAGE){
-//                    ARMarkerReadings armr = (ARMarkerReadings)ipSocketMessage.getObjectFromMessage(ARMarkerReadings.class);
-//                    ImageReading imageReading = (ImageReading)ipSocketMessage.getObjectFromMessage(ImageReading.class);
-//                    for(ARMarkerReading arMarkerReading: armr.getArMarkerReadings()){
-//                        System.out.println(arMarkerReading.getMarkerId());
-//                        System.out.println(
-//                                MatrixToStringConverter.convertToString(arMarkerReading.getVertex(), ",", ",")
-//                        );
-//                        System.out.println(
-//                                MatrixToStringConverter.convertToString(arMarkerReading.getTransMat(), ",", ",")
-//                        );
-//                    }
-                    //System.out.println(imageReading.getImage());
-                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingEntity.ReadingType.MARKER_WITH_IMAGE);
-                }
-                if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_ORIENTATION){
-                    //OrientationReading or = (OrientationReading)ipSocketMessage.getObjectFromMessage(OrientationReading.class);
-                    //WifiReadings wrs = (WifiReadings)ipSocketMessage.getObjectFromMessage(WifiReadings.class);
-                    
-                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingEntity.ReadingType.ORIENTATION);
-                    
-                }
+                
+//                if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_MARKER_WITHOUT_IMAGE){
+//                    
+//                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingsEntity.ReadingType.MARKER_WITHOUT_IMAGE);
+//                }
+//                if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_MARKER_WITH_IMAGE){
+////                    ARMarkerReadings armr = (ARMarkerReadings)ipSocketMessage.getObjectFromMessage(ARMarkerReadings.class);
+////                    ImageReading imageReading = (ImageReading)ipSocketMessage.getObjectFromMessage(ImageReading.class);
+////                    for(ARMarkerReading arMarkerReading: armr.getArMarkerReadings()){
+////                        System.out.println(arMarkerReading.getMarkerId());
+////                        System.out.println(
+////                                MatrixToStringConverter.convertToString(arMarkerReading.getVertex(), ",", ",")
+////                        );
+////                        System.out.println(
+////                                MatrixToStringConverter.convertToString(arMarkerReading.getTransMat(), ",", ",")
+////                        );
+////                    }
+//                    //System.out.println(imageReading.getImage());
+//                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingsEntity.ReadingType.MARKER_WITH_IMAGE);
+//                }
+//                if(ipSocketMessage.getSocketMessageRequest() == IPRequestType.POST_READING_ORIENTATION){
+//                    //OrientationReading or = (OrientationReading)ipSocketMessage.getObjectFromMessage(OrientationReading.class);
+//                    //WifiReadings wrs = (WifiReadings)ipSocketMessage.getObjectFromMessage(WifiReadings.class);
+//                    
+//                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingsEntity.ReadingType.ORIENTATION);
+//                    
+//                }
                 
                 if(ipRequestType == IPRequestType.REQUEST_MAP){
                     BufferedImage bufferedImage = ImageIO.read(new File("DSC_0926.jpg"));
@@ -109,8 +99,8 @@ public class ClientThread extends Thread{
                     oos.flush();
                 }
                 else if (ipRequestType == IPRequestType.POST_LOCATION_DATA){
-                    LocationDetectionHandler.getInstance().getLocation(ipSocketMessage);
-                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingEntity.ReadingType.LOCATION);
+//                    LocationDetectionHandler.getInstance().getLocation(ipSocketMessage);
+//                    EntitiesController.getInstance().addSocketMessage(ipSocketMessage, ReadingsEntity.ReadingType.LOCATION);
                     //System.out.println(ipRequestType);
                     //LocationDetectionHandler
                 }

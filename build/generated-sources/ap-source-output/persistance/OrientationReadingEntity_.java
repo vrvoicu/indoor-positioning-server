@@ -5,7 +5,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import persistance.ReadingEntity;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2016-04-17T17:23:49")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-02-08T11:18:16")
 @StaticMetamodel(OrientationReadingEntity.class)
 public class OrientationReadingEntity_ { 
 

@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -33,10 +34,6 @@ public class ReadingEntity implements Serializable {
     private Long id;
     
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "phone_details_id")
-    private PhoneDetailsEntity phoneDetailsEntity;
-    
-    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gsm_reading_id")
     private GSMReadingEntity gsmReadingEntity;
     
@@ -50,12 +47,10 @@ public class ReadingEntity implements Serializable {
     @OneToMany(mappedBy = "readingEntity")
     private List<ARMarkerReadingEntity> arMarkerReadingEntitys;
     
-    @Enumerated(value = EnumType.STRING)
-    private ReadingType readingType;
-    
-    public enum ReadingType{
-        MARKER_WITH_IMAGE, MARKER_WITHOUT_IMAGE, ORIENTATION, LOCATION
-    }
+//    new add
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "readings_id")
+    private ReadingsEntity readingsEntity;
 
     public ReadingEntity() {
         wifiReadings = new ArrayList<>();
@@ -70,15 +65,15 @@ public class ReadingEntity implements Serializable {
         this.id = id;
     }
 
-    public PhoneDetailsEntity getPhoneDetailsEntity() {
-        return phoneDetailsEntity;
-    }
-
-    public void setPhoneDetailsEntity(PhoneDetailsEntity phoneDetailsEntity) {
-        this.phoneDetailsEntity = phoneDetailsEntity;
-        if(phoneDetailsEntity.getReadingEntity() != this)
-            phoneDetailsEntity.setReadingEntity(this);
-    }
+//    public PhoneDetailsEntity getPhoneDetailsEntity() {
+//        return phoneDetailsEntity;
+//    }
+//
+//    public void setPhoneDetailsEntity(PhoneDetailsEntity phoneDetailsEntity) {
+//        this.phoneDetailsEntity = phoneDetailsEntity;
+//        if(phoneDetailsEntity.getReadingEntity() != this)
+//            phoneDetailsEntity.setReadingEntity(this);
+//    }
 
     public GSMReadingEntity getGsmReadingEntity() {
         return gsmReadingEntity;
@@ -109,6 +104,32 @@ public class ReadingEntity implements Serializable {
         if(orientationReadingEntity.getReadingEntity() != this)
             orientationReadingEntity.setReadingEntity(this);
     }
+    
+    public void addWifiReadingEntity(WifiReadingEntity wifiReadingEntity){
+        if(wifiReadingEntity == null)
+            return;
+        
+        wifiReadings.add(wifiReadingEntity);
+        
+        if(wifiReadingEntity.getReadingEntity() == null)
+            wifiReadingEntity.setReadingEntity(this);
+        
+        if(wifiReadingEntity.getReadingEntity() != this)
+            wifiReadingEntity.setReadingEntity(this);
+    }
+    
+    public void addArMarkerReading(ARMarkerReadingEntity arMarkerReadingEntity){
+        if(arMarkerReadingEntity == null)
+            return;
+        
+        arMarkerReadingEntitys.add(arMarkerReadingEntity);
+        
+        if(arMarkerReadingEntity.getReadingEntity() == null)
+            arMarkerReadingEntity.setReadingEntity(this);
+        
+        if(arMarkerReadingEntity.getReadingEntity() != this)
+            arMarkerReadingEntity.setReadingEntity(this);
+    }
 
     public List<WifiReadingEntity> getWifiReadings() {
         return wifiReadings;
@@ -130,12 +151,12 @@ public class ReadingEntity implements Serializable {
             arMarkerEntity.setReadingEntity(this);
     }
 
-    public ReadingType getReadingType() {
-        return readingType;
+    public ReadingsEntity getReadingsEntity() {
+        return readingsEntity;
     }
 
-    public void setReadingType(ReadingType readingType) {
-        this.readingType = readingType;
+    public void setReadingsEntity(ReadingsEntity readingsEntity) {
+        this.readingsEntity = readingsEntity;
     }
 
     @Override
